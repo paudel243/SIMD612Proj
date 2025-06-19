@@ -13,7 +13,11 @@ On 2^28 input x86 was 2.42 times faster than C / XMM was 3.49 times faster / YMM
 Why it's faster:
 SSE and AVX were able to operate on vectors which allows for multiple operations to happen concurrently unlike the base C kernel that handles one value at a time. XMM utilizes 128-bit registers while YMM makes use of 256-bit registers so AVX can process twice as much data per instruction as SSE. x86 is faster than C due to assembly making use of efficient instructions for the dataflow compared to C.
 
+Problems encountered/Solutions:
+- We initially had a problem running higher inputs (2^28) however we made use of virtual malloc and a setting in visual studio under linker-> system and set enable large addresses.
 
+Unique Methodology:
+- The XMM and YMM makes use of vectorization where we're loading multiple doubles at once and process data concurrently. 
 
 
 ### Screenshots for Execution Times for 2^20 including Correctness check for each kernel
