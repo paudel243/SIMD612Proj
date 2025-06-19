@@ -16,7 +16,7 @@ SSE and AVX were able to operate on vectors which allows for multiple operations
 
 
 
-###Screenshots for Execution Times for 2^20 including Correctness check for each kernel
+### Screenshots for Execution Times for 2^20 including Correctness check for each kernel
 
 ![1](Execution%20Times%20Screenshots/1048576/1.png)
 ![2](Execution%20Times%20Screenshots/1048576/2.png)
