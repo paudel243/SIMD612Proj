@@ -13,4 +13,41 @@ On 2^28 input x86 was 2.42 times faster than C / XMM was 3.49 times faster / YMM
 Why it's faster:
 SSE and AVX were able to operate on vectors which allows for multiple operations to happen concurrently unlike the base C kernel that handles one value at a time. XMM utilizes 128-bit registers while YMM makes use of 256-bit registers so AVX can process twice as much data per instruction as SSE. x86 is faster than C due to assembly making use of efficient instructions for the dataflow compared to C.
 
-![2^20 Screenshot 1](Execution%20Times%20Screenshots/1048576/1.png)
+
+
+
+###Screenshots for Execution Times for 2^20 including Correctness check for each kernel
+
+![1](Execution%20Times%20Screenshots/1048576/1.png)
+![2](Execution%20Times%20Screenshots/1048576/2.png)
+![3](Execution%20Times%20Screenshots/1048576/3.png)
+![4](Execution%20Times%20Screenshots/1048576/4.png)
+![5](Execution%20Times%20Screenshots/1048576/5.png)
+![6](Execution%20Times%20Screenshots/1048576/6.png)
+![7](Execution%20Times%20Screenshots/1048576/7.png)
+![8](Execution%20Times%20Screenshots/1048576/8.png)
+![9](Execution%20Times%20Screenshots/1048576/9.png)
+![10](Execution%20Times%20Screenshots/1048576/10.png)
+![11](Execution%20Times%20Screenshots/1048576/11.png)
+![12](Execution%20Times%20Screenshots/1048576/12.png)
+![13](Execution%20Times%20Screenshots/1048576/13.png)
+![14](Execution%20Times%20Screenshots/1048576/14.png)
+![15](Execution%20Times%20Screenshots/1048576/15.png)
+![16](Execution%20Times%20Screenshots/1048576/16.png)
+![17](Execution%20Times%20Screenshots/1048576/17.png)
+![18](Execution%20Times%20Screenshots/1048576/18.png)
+![19](Execution%20Times%20Screenshots/1048576/19.png)
+![20](Execution%20Times%20Screenshots/1048576/20.png)
+![21](Execution%20Times%20Screenshots/1048576/21.png)
+![22](Execution%20Times%20Screenshots/1048576/22.png)
+![23](Execution%20Times%20Screenshots/1048576/23.png)
+![24](Execution%20Times%20Screenshots/1048576/24.png)
+![25](Execution%20Times%20Screenshots/1048576/25.png)
+![26](Execution%20Times%20Screenshots/1048576/26.png)
+![27](Execution%20Times%20Screenshots/1048576/27.png)
+![28](Execution%20Times%20Screenshots/1048576/28.png)
+![29](Execution%20Times%20Screenshots/1048576/29.png)
+![30](Execution%20Times%20Screenshots/1048576/30.png)
+
+
+
