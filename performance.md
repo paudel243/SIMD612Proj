@@ -1,13 +1,4 @@
-# SIMD 1D Vector Stencil
-#### Members:
-- Abdul Raafi M. Bandrang
-- Dennis Paulo S. Delgado
-
-
-## General Program Outputs
-![](images/general_output.png)
-
-## Comparative  Analysis
+## runtime performance
 | run   |   C Kernel (^20) |   C Kernel (^26) |   C Kernel (^28) |   SIMD using XMM register (^20) |   SIMD using XMM register (^26) |   SIMD using XMM register (^28) |   SIMD using YMM register (^20) |   SIMD using YMM register (^26) |   SIMD using YMM register (^28) |   x86-64 assembly language (^20) |   x86-64 assembly language (^26) |   x86-64 assembly language (^28) |
 |:------|-----------------:|-----------------:|-----------------:|--------------------------------:|--------------------------------:|--------------------------------:|--------------------------------:|--------------------------------:|--------------------------------:|---------------------------------:|---------------------------------:|---------------------------------:|
 | 1     |          3.2752  |          213.58  |          860.081 |                         0.6151  |                         70.7134 |                         262.638 |                         0.4441  |                         70.4592 |                         247.836 |                          0.9917  |                          79.2946 |                          291.81  |
@@ -41,42 +32,3 @@
 | 29    |          3.3008  |          214.654 |          852.797 |                         0.7412  |                         71.2345 |                         267.203 |                         0.4437  |                         65.6731 |                         263.552 |                          0.987   |                          76.4444 |                          302.542 |
 | 30    |          3.2816  |          213.71  |          880.373 |                         0.6164  |                         65.845  |                         277.124 |                         0.8725  |                         62.9495 |                         439.704 |                          0.9955  |                          73.2601 |                          311.038 |
 | avg   |          3.31408 |          215.367 |          859.098 |                         0.60664 |                         70.8686 |                         266.188 |                         0.50024 |                         67.3389 |                         259.609 |                          1.00521 |                          77.5846 |                          297.835 |
-
-On 2^20 input x86 was 3.43 times faster than C / XMM was 3.69 times faster / YMM 4.70 times faster
-On 2^26 input x86 was 2.45 times faster than C / XMM was 3.40 times faster / YMM 4.04 times faster
-On 2^28 input x86 was 2.42 times faster than C / XMM was 3.49 times faster / YMM 4.14 times faster
-
-Why it's faster:
-SSE and AVX were able to operate on vectors which allows for multiple operations to happen concurrently unlike the base C kernel that handles one value at a time. XMM utilizes 128-bit registers while YMM makes use of 256-bit registers so AVX can process twice as much data per instruction as SSE. x86 is faster than C due to assembly making use of efficient instructions for the dataflow compared to C.
-
-
-## Screenshots of Program Outputs
-The correctness check is based on a sequence 1,2,34,5,6,7,8...N integers which produces the sequence "28,35...(28+(N-7)x7)"
-
-### Program Output w/ correctness check (C)
-Correctness Check             |  Execution
-:-------------------------:|:-------------------------:
-![](images/correctness_check.png) |  ![](images/c_execution.png)
-
-### Program Output w/ correctness check (x86-64 assembly languag)
-Correctness Check             |  Execution
-:-------------------------:|:-------------------------:
-![](images/correctness_check.png) |  ![](images/asm_execution.png)
-### Program Output w/ correctness check (SIMD using XMM register)
-Correctness Check             |  Execution
-:-------------------------:|:-------------------------:
-![](images/correctness_check.png) |  ![](images/xmm_execution.png)
-### Program Output w/ correctness check (SIMD using YMM register)
-Correctness Check             |  Execution
-:-------------------------:|:-------------------------:
-![](images/correctness_check.png) |  ![](images/ymm_execution.png)
-
-
-
-## Problems encountered
-
-Problems encountered/Solutions:
-- We initially had a problem running higher inputs (2^28) however we made use of virtual malloc and a setting in visual studio under linker-> system and set enable large addresses.
-
-Unique Methodology:
-- The XMM and YMM makes use of vectorization where we're loading multiple doubles at once and process data concurrently. 
