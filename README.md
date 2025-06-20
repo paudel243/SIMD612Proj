@@ -8,7 +8,7 @@
 ![](images/general_output.png)
 
 ## Comparative  Analysis
-| run   |   C Kernel (^20) |   C Kernel (^26) |   C Kernel (^28) |   SIMD using XMM register (^20) |   SIMD using XMM register (^26) |   SIMD using XMM register (^28) |   SIMD using YMM register (^20) |   SIMD using YMM register (^26) |   SIMD using YMM register (^28) |   x86-64 assembly language (^20) |   x86-64 assembly language (^26) |   x86-64 assembly language (^28) |
+| run   |   C Kernel (2<sup>20</sup>) |   C Kernel (2<sup>26</sup>) |   C Kernel (2<sup>28</sup>) |   SIMD using XMM register (2<sup>20</sup>) |   SIMD using XMM register (2<sup>26</sup>) |   SIMD using XMM register (2<sup>28</sup>) |   SIMD using YMM register (2<sup>20</sup>) |   SIMD using YMM register (2<sup>26</sup>) |   SIMD using YMM register (2<sup>28</sup>) |   x86-64 assembly language (2<sup>20</sup>) |   x86-64 assembly language (2<sup>26</sup>) |   x86-64 assembly language (2<sup>28</sup>) |
 |:------|-----------------:|-----------------:|-----------------:|--------------------------------:|--------------------------------:|--------------------------------:|--------------------------------:|--------------------------------:|--------------------------------:|---------------------------------:|---------------------------------:|---------------------------------:|
 | 1     |          3.2752  |          213.58  |          860.081 |                         0.6151  |                         70.7134 |                         262.638 |                         0.4441  |                         70.4592 |                         247.836 |                          0.9917  |                          79.2946 |                          291.81  |
 | 2     |          3.286   |          215.025 |          852.495 |                         0.5831  |                         72.483  |                         255.18  |                         0.6622  |                         66.1679 |                         247.497 |                          1.0141  |                          77.7705 |                          291.057 |
@@ -42,13 +42,13 @@
 | 30    |          3.2816  |          213.71  |          880.373 |                         0.6164  |                         65.845  |                         277.124 |                         0.8725  |                         62.9495 |                         439.704 |                          0.9955  |                          73.2601 |                          311.038 |
 | avg   |          3.31408 |          215.367 |          859.098 |                         0.60664 |                         70.8686 |                         266.188 |                         0.50024 |                         67.3389 |                         259.609 |                          1.00521 |                          77.5846 |                          297.835 |
 
-On 2^20 input x86 was 3.43 times faster than C / XMM was 3.69 times faster / YMM 4.70 times faster
-On 2^26 input x86 was 2.45 times faster than C / XMM was 3.40 times faster / YMM 4.04 times faster
-On 2^28 input x86 was 2.42 times faster than C / XMM was 3.49 times faster / YMM 4.14 times faster
+On 2<sup>20</sup> input x86 was 3.3 times faster than C / XMM was 5.46 times faster / YMM 6.62 times faster
+On 2<sup>26</sup> input x86 was 2.77 times faster than C / XMM was 3.04 times faster / YMM 3.2 times faster
+On 2<sup>28</sup>input x86 was 2.88 times faster than C / XMM was 3.23 times faster / YMM 3.31 times faster
 
-Why it's faster:
-SSE and AVX were able to operate on vectors which allows for multiple operations to happen in parallel unlike the base C and to a lesser degree the base assemebly kernel that handles one value at a time. The XMM registers utilizes 128 bits of is registers while YMM makes use of 256 bits registers so AVX can process twice as much data per instruction as SSE. x86 is faster than C due to assembly making use of efficient instructions for the dataflow compared to C.
+For the x86-64 assembly language kernel, this is able to outpace the C kernel due to requiring less instruction in its process. We can extract the assembly code for [C Kernel](./CVersionStencil_Disassemble.asm) through the use of the visual studio disassembler. Comparing this to the [base assembly](./SIMD1DStencil/asmbase.asm) function, we observe that the C function has 60 lines of instruction in contrast to assembly function's 31 lines. Given these also utilize loops the disparity of the number of instructions between these two expound as we introduce more to data to the vector. 
 
+For the SIMD Kernels, SSE and AVX were able to operate on vectors which allows for multiple operations to happen in parallel unlike the base C and to a lesser degree the base assemebly kernel that handles one value at a time. There are a total 16 XMM registers utilizing 128 bits and 16 YMM registers utilizing 256 bits. In this given scenario we're utlizing 64 bit integers we can generate two parallel stencils for the XMM registers and four parallel stencils for the YMM registers. 
 
 ## Screenshots of Program Outputs
 The correctness check is based on a sequence 1,2,34,5,6,7,8...N integers which produces the sequence "28,35...(28+(N-7)x7)"
@@ -76,7 +76,23 @@ Correctness Check             |  Execution
 ## Problems, Solutions, Methodology, and AHA moments.
 
 Problems encountered/Solutions:
-- We initially had a problem running higher inputs (2^28) however we made use of virtual malloc and a setting in visual studio under linker-> system and set enable large addresses. Furthermore, we had a problem running on the release environment. In this scenario, we observe that some variables even those isolated solely within a function would etiher contain random data or point to values outside of the array/vector set. Upon futher investigation, this issue seems to highly related to the code optimization conducts during compilation. In this we found that the "Maximum Optimization (Favor Speed) (/O2)" optimization causes a significant ammount variability to the ouputs generated by the application. We instead utilized the "Optimizations (Favor Speed) (/Ox)" optimization which though relative slower in its performance is significantly more deterministic that the prior optimization.
+- We initially had a problem running higher inputs (2<sup>28</sup>) however we made use of virtual malloc and a setting in visual studio under linker-> system and set enable large addresses. Furthermore, we had a problem running on the release environment. In this scenario, we observe that some variables even those isolated solely within a function would etiher contain random data or point to values outside of the array/vector set. Upon futher investigation, this issue seems to highly related to the code optimization conducts during compilation. In this we found that the "Maximum Optimization (Favor Speed) (/O2)" optimization causes a significant ammount variability to the ouputs generated by the application. We instead just enabled intrinsic functions, selected "Favor fast code (/Ot)" for favor size or speed, and whole program optimization which though relative slower in its performance is significantly more deterministic than the prior optimization. Using the two environments we compared overall gain/loss between environments. From this, we didn't observe any significant gain or loss between environments thus we just settled with using the debug generated application.
+
+|    | kernel                         |   runtime_debug |   runtime_release |   Speed Gain/Loss |
+|---:|:-------------------------------|----------------:|------------------:|------------------:|
+|  0 | C Kernel (2<sup>20</sup>)                 |         3.31408 |          3.41685  |          0.969923 |
+|  1 | C Kernel (2<sup>26</sup>)                 |       215.367   |        220.991    |          0.974551 |
+|  2 | C Kernel (2<sup>28</sup>)                 |       859.098   |        904.214    |          0.950105 |
+|  3 | SIMD using XMM register (2<sup>20</sup>)  |         0.60664 |          0.641753 |          0.945285 |
+|  4 | SIMD using XMM register (2<sup>26</sup>)  |        70.8686  |         67.1932   |          1.0547   |
+|  5 | SIMD using XMM register (2<sup>28</sup>)  |       266.188   |        269.044    |          0.989383 |
+|  6 | SIMD using YMM register (2<sup>20</sup>)  |         0.50024 |          0.479687 |          1.04285  |
+|  7 | SIMD using YMM register (2<sup>26</sup>)  |        67.3389  |         64.2126   |          1.04869  |
+|  8 | SIMD using YMM register (2<sup>28</sup>)  |       259.609   |        257.568    |          1.00792  |
+|  9 | x86-64 assembly language (2<sup>20</sup>) |         1.00521 |          0.878753 |          1.1439   |
+| 10 | x86-64 assembly language (2<sup>26</sup>) |        77.5846  |         72.84     |          1.06514  |
+| 11 | x86-64 assembly language (2<sup>28</sup>) |       297.835   |        291.428    |          1.02199  |
+
 
 Unique Methodology:
-- The XMM and YMM makes use of vectorization where we're loading multiple doubles at once and process data concurrently. 
+- The XMM and YMM makes use of vectorization where we're loading multiple doubles at once and process data in parallel. Additionally, to generate and record the 30 runs for each vector size 2<sup>20</sup>,2<sup>26</sup>, and 2<sup>28</sup>we generated the exe files for each vector size and utilize a basic [shell scripts](./runscripts.sh) to run and save the outputs for each variation.
